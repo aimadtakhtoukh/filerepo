@@ -1,0 +1,1 @@
+docker run -d --name filerepo --env-file ./env.list -p 80:80 -v /d/Downloads/files:/data --restart=always filerepo
