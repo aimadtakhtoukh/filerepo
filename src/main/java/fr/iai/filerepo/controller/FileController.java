@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
@@ -33,7 +34,7 @@ public class FileController {
 
     private final FileService fileService;
 
-    @Value("#{${url.path}}")
+    @Value("#{${urlPath}}")
     private Map<String, String> urlPaths;
 
     @Autowired
@@ -42,12 +43,14 @@ public class FileController {
     }
 
     @GetMapping("get")
+    @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('STANDARD_USER')")
     public List<FileInfoBean> getRootPath(UriComponentsBuilder b) throws IOException {
         String url = b.toUriString();
         return fileService.getFileNames("", url);
     }
 
     @GetMapping("get/**")
+    @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('STANDARD_USER')")
     public List<FileInfoBean> getPaths(HttpServletRequest request, UriComponentsBuilder b) throws IOException {
         String subpath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)
                 .toString().replaceFirst("/file/get", "");
@@ -56,6 +59,7 @@ public class FileController {
     }
 
     @GetMapping("download/**")
+    @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('STANDARD_USER')")
     public ResponseEntity<Resource> getFile(HttpServletRequest request) throws IOException {
         String subpath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)
                 .toString().replaceFirst("/file/download", "");

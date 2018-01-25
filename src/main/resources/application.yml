@@ -1,0 +1,37 @@
+server:
+  port: 80
+urlPath: "{download: '/download/**', upload: '/upload/**', get: '/get/**', getSingle: '/get'}"
+url:
+  path:
+    directory: /file/get/
+    file: /file/download/
+
+security:
+  oauth2:
+    resource.filter-order: 3
+  signing-key: MaYzkSjmkzPC57L
+  encoding-strength: 256
+  security-realm: Spring Boot JWT Example Realm
+
+  jwt:
+    client-id: testjwtclientid
+    client-secret: XY7kmzoNzl100
+    scope-read: read
+    scope-write: write
+    resource-ids: testjwtresourceid
+spring:
+  datasource:
+    url: jdbc:h2:mem:test2
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+    schema: classpath:/sql-scripts/schema.sql
+    data: classpath:/sql-scripts/data.sql
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+      show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
