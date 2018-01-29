@@ -2,6 +2,7 @@ package fr.iai.filerepo.service;
 
 import fr.iai.filerepo.beans.FileInfoBean;
 import fr.iai.filerepo.beans.FileReceptionBean;
+import fr.iai.filerepo.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,20 +28,22 @@ public class FileService {
 
     private Logger logger = LoggerFactory.getLogger(FileService.class);
 
-    public void saveFile(FileReceptionBean file, String subpath) throws IOException{
+    public void saveFile(FileReceptionBean file, String subpath, User user) throws IOException{
         Path newFilePath = Paths.get(fileRepositoryPath, subpath, file.getName());
         Files.write(newFilePath, file.getContent());
-        logger.info("Saved file {} in folder {}, size {}B",
+        logger.info("{} saved file {} in folder {}, size {}B",
+                user.getFullName(),
                 file.getName(), newFilePath.toAbsolutePath(), file.getContent().length);
     }
 
-    public void createFolder(String subpath) throws IOException {
+    public void createFolder(String subpath, User user) throws IOException {
         Path newFolder = Paths.get(fileRepositoryPath, subpath);
         Files.createDirectories(newFolder);
-        logger.info("New folder {} created", newFolder.toAbsolutePath());
+        logger.info("New folder {} created by {}", newFolder.toAbsolutePath(), user.getFullName());
     }
 
-    public List<FileInfoBean> getFileNames(String subpath, String url) throws IOException {
+    public List<FileInfoBean> getFileNames(String subpath, String url, User user) throws IOException {
+        logger.info("{} gets file list in {}", user.getFullName(), subpath);
         Path mainFolderPath = Paths.get(fileRepositoryPath);
         Path savedFilesPath = Paths.get(fileRepositoryPath, subpath);
         return Files.list(savedFilesPath)
@@ -56,7 +59,8 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
-    public File getFile(String subpath) {
+    public File getFile(String subpath, User user) {
+        logger.info("{} downloads {}", user.getFullName(), subpath);
         return Paths.get(fileRepositoryPath, subpath).toFile();
     }
 }

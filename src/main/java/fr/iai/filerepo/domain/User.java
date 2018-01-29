@@ -7,6 +7,7 @@ import java.util.List;
 @Table(name = "app_user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "first_name")
     private String firstName;
@@ -14,6 +15,8 @@ public class User {
     private String lastName;
     private String password;
     private String username;
+    private boolean enabled;
+    private String salt;
     @OneToMany
     @JoinTable(
             name="user_role",
@@ -68,5 +71,25 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }

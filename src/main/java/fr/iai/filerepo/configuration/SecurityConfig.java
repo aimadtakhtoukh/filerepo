@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.dao.ReflectionSaltSource;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,18 +15,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.web.AuthenticationEntryPoint;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -55,8 +50,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(new ShaPasswordEncoder(encodingStrength));
+        ReflectionSaltSource saltSource = new ReflectionSaltSource();
+        saltSource.setUserPropertyToUse("salt");
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setSaltSource(saltSource);
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(new ShaPasswordEncoder(encodingStrength));
+        auth.authenticationProvider(provider);
     }
 
     @Override

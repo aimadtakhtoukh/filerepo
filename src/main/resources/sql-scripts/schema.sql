@@ -11,7 +11,9 @@ CREATE TABLE app_user (
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
-  username varchar(255) NOT NULL,
+  username varchar(255) NOT NULL UNIQUE,
+  enabled BOOL NOT NULL,
+  salt VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
 

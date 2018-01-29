@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,29 @@ public class AppUserDetailsService implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.
-                User(user.getUsername(), user.getPassword(), authorities);
+        return new SaltedUser(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, authorities, user.getSalt());
+    }
+
+    public class SaltedUser extends org.springframework.security.core.userdetails.User {
+        private String salt;
+
+        public SaltedUser(String username, String password, Collection<? extends GrantedAuthority> authorities, String salt) {
+            super(username, password, authorities);
+            this.salt = salt;
+        }
+
+        public SaltedUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired,
+                          boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, String salt) {
+            super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+            this.salt = salt;
+        }
+
+        public String getSalt() {
+            return salt;
+        }
+
+        public void setSalt(String salt) {
+            this.salt = salt;
+        }
     }
 }
