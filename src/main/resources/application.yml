@@ -1,5 +1,10 @@
 server:
-  port: 80
+  port: 443
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    key-alias: tomcat
 urlPath: "{download: '/download/**', upload: '/upload/**', get: '/get/**', getSingle: '/get'}"
 url:
   path:
@@ -13,6 +18,7 @@ security:
   jwt:
     client-id: testjwtclientid
     resource-ids: testjwtresourceid
+  require-ssl: true
 spring:
   datasource:
     url: jdbc:h2:mem:test2
