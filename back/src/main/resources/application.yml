@@ -21,12 +21,10 @@ security:
   require-ssl: true
 spring:
   datasource:
-    url: jdbc:h2:mem:test2
-    username: sa
-    password:
-    driverClassName: org.h2.Driver
-    schema: classpath:/sql-scripts/schema.sql
-    data: classpath:/sql-scripts/data.sql
+    url: jdbc:mysql://${jdbc_url}:3306/db
+    username: ${jdbc_login}
+    password: ${jdbc_password}
+    driverClassName: com.mysql.jdbc.Driver
   jpa:
     generate-ddl: false
     hibernate:

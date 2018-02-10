@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.keygen.KeyGenerators;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -48,6 +48,30 @@ public class UserController {
         user.setSalt(salt);
         user.setEnabled(false);
         user.setRoles(Collections.singletonList(roleRepository.findOneByRoleName("STANDARD_USER")));
+        userRepository.save(user);
+    }
+
+    @PostMapping("update/{username}")
+    public void updateUserAccount(@PathVariable String username,
+                                  @RequestParam(required = false) String login,
+                                  @RequestParam(required = false) String password,
+                                  @RequestParam(required = false) String firstName,
+                                  @RequestParam(required = false) String lastName) {
+        User user = userRepository.findByUsername(username);
+        if (!StringUtils.isEmpty(firstName)) {
+            user.setFirstName(firstName);
+        }
+        if (!StringUtils.isEmpty(lastName)) {
+            user.setLastName(lastName);
+        }
+        if (!StringUtils.isEmpty(login)) {
+            user.setUsername(login);
+        }
+        if (!StringUtils.isEmpty(password)) {
+            String salt = KeyGenerators.string().generateKey();
+            user.setPassword(new ShaPasswordEncoder(encodingStrength).encodePassword(password, salt));
+            user.setSalt(salt);
+        }
         userRepository.save(user);
     }
 

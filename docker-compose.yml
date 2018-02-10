@@ -1,0 +1,27 @@
+version : '3'
+services:
+  filerepo-database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      args:
+        - jdbcrootpassword=${jdbcrootpassword}
+        - jdbclogin=${jdbclogin}
+        - jdbcpassword=${jdbcpassword}
+    ports:
+      - "127.0.0.1:3306:3306"
+    env_file:
+      - ./database/env.properties
+    restart: always
+    links:
+      - filerepo-back
+  filerepo-back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    env_file:
+      - ./back/env.properties
