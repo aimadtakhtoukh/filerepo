@@ -12,7 +12,7 @@ services:
       - "127.0.0.1:3306:3306"
     env_file:
       - ./database/env.properties
-    restart: always
+#    restart: always
     links:
       - filerepo-back
   filerepo-back:
@@ -22,6 +22,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    restart: always
+#    restart: always
     env_file:
       - ./back/env.properties
