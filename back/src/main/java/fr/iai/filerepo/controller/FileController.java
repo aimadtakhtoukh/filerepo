@@ -99,7 +99,7 @@ public class FileController {
         logger.error("Erreur d'IO", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Erreur d'IO");
+                .body("{\"error\" : \"Erreur d'IO\"}");
     }
 
 }

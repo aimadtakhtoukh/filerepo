@@ -13,8 +13,8 @@ services:
     env_file:
       - ./database/env.properties
 #    restart: always
-    links:
-      - filerepo-back
+#    links:
+#      - filerepo-back
   filerepo-back:
     build:
       context: ./back
@@ -25,3 +25,5 @@ services:
 #    restart: always
     env_file:
       - ./back/env.properties
+    depends_on:
+      - filerepo-database

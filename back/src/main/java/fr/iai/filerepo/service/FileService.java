@@ -2,6 +2,7 @@ package fr.iai.filerepo.service;
 
 import fr.iai.filerepo.beans.FileInfoBean;
 import fr.iai.filerepo.beans.FileReceptionBean;
+import fr.iai.filerepo.beans.FileType;
 import fr.iai.filerepo.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +55,8 @@ public class FileService {
                                 (p.toFile().isDirectory() ? directoryPath : filePath) +
                                 p.subpath(mainFolderPath.getNameCount(), p.getNameCount())
                                 .toString()
-                                .replace("\\", "/")
-                ))
+                                .replace("\\", "/"),
+                        (p.toFile().isDirectory() ? FileType.FOLDER : FileType.FILE)))
                 .collect(Collectors.toList());
     }
 
