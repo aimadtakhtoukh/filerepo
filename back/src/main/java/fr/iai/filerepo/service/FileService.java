@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +32,10 @@ public class FileService {
 
     public void saveFile(FileReceptionBean file, String subpath, User user) throws IOException{
         Path newFilePath = Paths.get(fileRepositoryPath, subpath, file.getName());
-        Files.write(newFilePath, file.getContent());
+        Files.copy(file.getContent(), newFilePath, StandardCopyOption.REPLACE_EXISTING);
         logger.info("{} saved file {} in folder {}, size {}B",
                 user.getFullName(),
-                file.getName(), newFilePath.toAbsolutePath(), file.getContent().length);
+                file.getName(), newFilePath.toAbsolutePath(), newFilePath.toFile().length());
     }
 
     public void createFolder(String subpath, User user) throws IOException {

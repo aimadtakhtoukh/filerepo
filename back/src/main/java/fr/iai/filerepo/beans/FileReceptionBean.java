@@ -1,10 +1,12 @@
 package fr.iai.filerepo.beans;
 
+import java.io.InputStream;
+
 public class FileReceptionBean {
     private String name;
-    private byte[] content;
+    private InputStream content;
 
-    public FileReceptionBean(String name, byte[] content) {
+    public FileReceptionBean(String name, InputStream content) {
         this.name = name;
         this.content = content;
     }
@@ -13,7 +15,7 @@ public class FileReceptionBean {
         return name;
     }
 
-    public byte[] getContent() {
+    public InputStream getContent() {
         return content;
     }
 }

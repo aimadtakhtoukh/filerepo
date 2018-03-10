@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +78,7 @@ public class FileController {
                 .headers(headers)
                 .contentLength(file.length())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new ByteArrayResource(Files.readAllBytes(file.toPath())));
+                .body(new InputStreamResource(new FileInputStream(file)));
     }
 
     @PostMapping("upload/**")
@@ -89,7 +89,7 @@ public class FileController {
                 .toString().replaceFirst("/file/upload", "");
         fileService.createFolder(subpath, userRepository.findByUsername(a.getName()));
         for (MultipartFile file : files) {
-            FileReceptionBean fileReceptionBean = new FileReceptionBean(file.getOriginalFilename(), file.getBytes());
+            FileReceptionBean fileReceptionBean = new FileReceptionBean(file.getOriginalFilename(), file.getInputStream());
             fileService.saveFile(fileReceptionBean, subpath, userRepository.findByUsername(a.getName()));
         }
     }
@@ -99,7 +99,7 @@ public class FileController {
         logger.error("Erreur d'IO", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("{\"error\" : \"Erreur d'IO\"}");
+                .body("{\"error\" : \"" + e.getMessage() + "\"}");
     }
 
 }
