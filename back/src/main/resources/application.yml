@@ -25,11 +25,25 @@ spring:
     username: ${jdbc_login}
     password: ${jdbc_password}
     driverClassName: com.mysql.jdbc.Driver
+    continueOnError: true
+    initialize: false
+    initialSize: 0
+    timeBetweenEvictionRunsMillis: 5000
+    minEvictableIdleTimeMillis: 5000
+    minIdle: 0
+
   jpa:
+    show-sql: true
     generate-ddl: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
       show-sql: true
+      naming_strategy: org.hibernate.cfg.DefaultNamingStrategy
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        hbm2ddl:
+          auto: none
+        temp:
+          use_jdbc_metadata_defaults: false
         enable_lazy_load_no_trans: true
